@@ -1,0 +1,168 @@
+a== e==x utoieutieo==ex
+xxxxxxxxxxxOK
+ evvvaaaabbcc+xx aaa
+OKQ
+xaOK y OK -OK  ZZZZZZZZOK
+xaOK
+ABBA
+Mab
+,PAP
+XPMAM,PAP XAM
+<WO>OK<WO> <BAM>OK<BAM>
+aaaaaa aaa
+TVset TVSET tvset
+AA
+AA
+
+[[[[[[[[A]]]]]]]]
+bb
+bb
+
+//-------------------------------------------------------------------------------------------------
+
+<A id = "EWQ::GOOD!\\1234 \' \" PP" >
+	<p id="id1" data='me::[info]' ></p>
+	<p>EEE</p>
+	<sub>
+		<x>
+		nabortexta
+		</x>
+	</sub>
+	<p> ========= <b>text</b> ======== </p>
+	<BR/>
+	<HR/>
+</A>
+
+
+
+
+
+<glossary>
+<title>example glossary</title>
+ <GlossDiv>
+  <title>S</title>
+   <GlossList>
+    <GlossEntry ID="SGML" SortAs="SGML">
+     <GlossTerm>Standard Generalized Markup Language</GlossTerm>
+     <Acronym>SGML</Acronym>
+     <Abbrev>ISO 8879:1986</Abbrev>
+     <GlossDef>
+      <para>A meta-markup language, used to create markup
+languages such as DocBook.</para>
+     </GlossDef>
+    </GlossEntry>
+   </GlossList>
+  </GlossDiv>
+</glossary>
+
+
+
+<menu id="file" value="File">
+  <popup>
+    <menuitem value="New" onclick="CreateNewDoc()" />
+    <menuitem value="Open" onclick="OpenDoc()" />
+    <menuitem value="Close" onclick="CloseDoc()" />
+  </popup>
+</menu>
+
+
+
+<html>
+  <head>
+    <title>Href Attribute Example</title>
+  </head>
+  <body>
+    <h1>Href Attribute Example</h1>
+    <p>
+      <a href="https://www.freecodecamp.org/contribute/">
+      The freeCodeCamp Contribution Page
+      </a>
+      shows you how and where you can contribute to freeCodeCamp's community and growth.
+    </p>
+  </body>
+</html>
+
+
+<widget>
+    <debug>on</debug>
+    <window title="Sample Konfabulator Widget">
+        <name>main_window</name>
+        <width>500</width>
+        <height>500</height>
+    </window>
+    <image src="Images/Sun.png" name="sun1">
+        <hOffset>250</hOffset>
+        <vOffset>250</vOffset>
+        <alignment>center</alignment>
+    </image>
+    <text data="Click Here" size="36" style="bold">
+        <name>text1</name>
+        <hOffset>250</hOffset>
+        <vOffset>100</vOffset>
+        <alignment>center</alignment>
+        <onMouseUp>
+            sun1.opacity = (sun1.opacity / 100) * 90;
+        </onMouseUp>
+    </text>
+</widget>
+
+
+
+
+{
+	"menu": {
+	  "id": "file",
+	  "value": "File",
+	  "popup": {
+	    "menuitem": [
+	      {"value": "New", "onclick": "CreateNewDoc()"},
+	      {"value": "Open", "onclick": "OpenDoc()"},
+	      {"value": "Close", "onclick": "CloseDoc()"}
+	    ]
+	  }
+	}
+}
+
+
+
+
+{
+	"menu": {
+	    "header": "SVG Viewer",
+	    "items": [
+	        {"id": "Open"},
+	        {"id": "OpenNew", "label": "Open New"},
+	        null,
+	        {"id": "ZoomIn", "label": "Zoom In"},
+	        {"id": "ZoomOut", "label": "Zoom Out"},
+	        {"id": "OriginalView", "label": "Original View"},
+	        null,
+	        {"id": "Quality"},
+	        {"id": "Pause"},
+	        {"id": "Mute"},
+	        null,
+	        {"id": "Find", "label": "Find..."},
+	        {"id": "FindAgain", "label": "Find Again"},
+	        {"id": "Copy"},
+	        {"id": "CopyAgain", "label": "Copy Again"},
+	        {"id": "CopySVG", "label": "Copy SVG"},
+	        {"id": "ViewSVG", "label": "View SVG"},
+	        {"id": "ViewSource", "label": "View Source"},
+	        {"id": "SaveAs", "label": "Save As"},
+	        null,
+	        {"id": "Help"},
+	        {"id": "About", "label": "About Adobe CVG Viewer..."}
+	    ]
+	}
+}
+
+
+
+
+
+{
+  "a": null,
+  "b": [null,[{},{}],"GOOD!",0,0],
+  "c": 23.07,
+  "d": -0.6738538E-73
+}
