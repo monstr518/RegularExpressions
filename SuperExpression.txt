@@ -1,6 +1,5 @@
 (?x)
-($name:[A-Za-z][A-Za-z0-9]*)
-($CallSE:\{{name}\})
+($CallSE:\{({:Name}|:(String|Digit|Name))\})
 ($SpecialChar:\\[DSWdsw])
 ($SpaceChar:([ \f\n\r\t\v]|\\[fnrtv]))
 ($x:\\[0-9A-Fa-f]{2})
@@ -12,7 +11,7 @@
 ($Grupa:\\[1-9])
 ($QE:\\Q.*?\\E)
 ($PosInStr:([\^\$]|\\[Bb]))
-($PrefixBody:((\#|\?#)|(\${name}:)|(\?[ismx-]*:)|(\?=)|(\?!)|(\?<=)|(\?<!)|(\?=)|(\?>)|(\?)))
+($PrefixBody:((\#|\?#)|(\${:Name}:)|(\?[ismx-]*:)|(\?=)|(\?!)|(\?<=)|(\?<!)|(\?=)|(\?>)|(\?)))
 ($SubE:\({BodyE}\))
 ($BodyE:(
 	(\?[ismx-])|

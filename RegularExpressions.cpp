@@ -646,6 +646,8 @@ BaseFinder* BaseFinder::ConvertRowRE(const RowRE*RRE){
 					if(c=='{'){
 						const char*p = FromText;
 						++FromText;
+						bool isStaticName = (*FromText==':');
+						if(isStaticName)++FromText;
 						string name = BaseFinder::parseName(FromText);
 						bool su = (name.size() && *FromText=='}');
 						if(su){
@@ -653,6 +655,12 @@ BaseFinder* BaseFinder::ConvertRowRE(const RowRE*RRE){
 							SUBBF = new BaseFinder();
 							SUBBF->type = 101;
 							SUBBF->text = name;
+							if(isStaticName){
+								if(name=="String")SUBBF->type = 110;
+								if(name=="Digit")SUBBF->type = 111;
+								if(name=="Name")SUBBF->type = 112;
+								if(SUBBF->type==101)isError = 1;
+								}
 							}else FromText = p;
 						}
 					if(c=='^' || (c=='$' && !isStartParse)){
@@ -1021,6 +1029,9 @@ string BaseFinder::toString() const {
 	if(type==53)text = "\\B";
 	if(type==100)text = "$" + this->text + ":" + text;
 	if(type==101)text = "{" + this->text + "}";
+	if(type==110)text = "{:String}";
+	if(type==111)text = "{:Digit}";
+	if(type==112)text = "{:Name}";
 	text = "(" + text + ")";
 	return text;
 }
@@ -1153,6 +1164,7 @@ char BaseFinder::isValidRecurse(FindersMahine*FM,V_S&VS) const {
 			}
 		return (isOneOK?1:2);
 		}
+	if(type>=110 && type<=112)return 1;
 	if(type==101){
 		bool isOK = (find(VS.begin(),VS.end(),text)==VS.end());
 		if(!isOK){
@@ -1840,6 +1852,74 @@ bool BaseFinder::Scaner(FindersMahine*FM,CTask*task) const {
 		task->end = MeTask->end;
 		return ok;
 		}
+	// 110	{:String}
+	// 111	{:Digit}
+	// 112	{:Name}
+	if(type==110){ // " A \" B "
+		if(task->iterator)return 0;
+		task->iterator = 1;
+		task->type = 3;
+		const char*p = task->s;
+		char start = *p;
+		if(!(start=='"' || start=='\''))return 0;
+		++p;
+		while(*p){
+			if(*p==start)break;
+			if(*p=='\\')++p;
+			++p;
+			}
+		if(*p!=start)return 0;
+		++p;
+		const char*i = task->s;
+		for(;i<p;++i)task->text += *i;
+		task->end = p;
+		return 1;
+		}
+	if(type==111){ // -0.6738538E-73
+		if(task->iterator)return 0;
+		task->iterator = 1;
+		task->type = 3;
+		const char*p = task->s;
+		if(*p=='-')++p;
+		bool pset = 0;
+		bool oneN = 0;
+		while(*p){
+			char c = *p;
+			bool isD = (c>='0' && c<='9');
+			bool isPset = (c=='.');
+			if(!(isD||isPset))break;
+			if(isD)oneN = 1;
+			if(isPset){
+				if(pset || !oneN)break;
+				pset = 1;
+				}
+			++p;
+			}
+		if(!oneN)return 0;
+		if(*p=='E' || *p=='e'){
+			++p;
+			if(*p=='-')++p;
+			while(*p){
+				char c = *p;
+				bool isD = (c>='0' && c<='9');
+				if(!isD)break;
+				++p;
+				}
+			}
+		const char*i = task->s;
+		for(;i<p;++i)task->text += *i;
+		task->end = p;
+		return 1;
+		}
+	if(type==112){ // Name55
+		if(task->iterator)return 0;
+		task->iterator = 1;
+		task->type = 3;
+		const char*p = task->s;
+		task->text = BaseFinder::parseName(p);
+		task->end = p;
+		return (p>task->s);
+		}
 	return 0;
 }
 
@@ -1982,33 +2062,24 @@ bool PovtorFinder::Scaner(FindersMahine*FM,CTask*task) const {
 string FindersMahine::ExamplesExpression(string name){
 	if(name=="XML"){
 		string Expression;
-		Expression += "($name:[a-zA-Z][a-zA-Z0-9]*)";
-		Expression += "($str1:'(\\\\.|[^'])*')";
-		Expression += "($str2:\"(\\\\.|[^\"])*\")";
-		Expression += "($arg:{name}\\s*=\\s*({str1}|{str2}))";
-		Expression += "($XML:<{name}\\s*({arg}\\s*)*>\\s*({XML}*|[^<]*)</\\2>\\s*)";
+		Expression += "($arg:{:Name}\\s*=\\s*{:String})";
+		Expression += "($XML:<{:Name}\\s*({arg}\\s*)*>\\s*({XML}*|[^<]*)</\\2>\\s*)";
 		Expression += "{XML}";
 		return Expression;
 		}
 	if(name=="HTML"){
 		string Expression;
-		Expression += "($name:[a-zA-Z][a-zA-Z0-9]*)";
-		Expression += "($str1:'(\\\\.|[^'])*')";
-		Expression += "($str2:\"(\\\\.|[^\"])*\")";
-		Expression += "($BR:<{name}\\s*({arg}\\s*)*/>)";
-		Expression += "($arg:{name}\\s*=\\s*({str1}|{str2}))";
-		Expression += "($HTML:<{name}\\s*({arg}\\s*)*>\\s*({BR}|{HTML}|[^<]+)*</\\2>\\s*)";
+		Expression += "($BR:<{:Name}\\s*({arg}\\s*)*/>)";
+		Expression += "($arg:{:Name}\\s*=\\s*{:String})";
+		Expression += "($HTML:<{:Name}\\s*({arg}\\s*)*>\\s*({BR}|{HTML}|[^<]+)*</\\2>\\s*)";
 		Expression += "{HTML}";
 		return Expression;
 		}
 	if(name=="JSON"){
 		string Expression;
-		Expression += "($digit:-?\\d+\\.?(?(3)\\d*)[Ee]?(?(5)-?\\d*))";
-		Expression += "($str1:'(\\\\.|[^'])*')";
-		Expression += "($str2:\"(\\\\.|[^\"])*\")";
 		Expression += "($array:\\[\\s*{JSON}?(?(3)(\\s*,\\s*{JSON})*)\\s*\\])";
-		Expression += "($table:\\{\\s*(({str1}|{str2})\\s*:\\s*{JSON})?(?(3)(\\s*,\\s*({str1}|{str2})\\s*:\\s*{JSON})*)\\s*\\})";
-		Expression += "($JSON:({table}|{array}|{str1}|{str2}|{digit}|null))";
+		Expression += "($table:\\{\\s*({:String}\\s*:\\s*{JSON})?(?(3)(\\s*,\\s*{:String}\\s*:\\s*{JSON})*)\\s*\\})";
+		Expression += "($JSON:({table}|{array}|{:String}|{:Digit}|null|true|false))";
 		Expression += "{JSON}";
 		return Expression;
 		}

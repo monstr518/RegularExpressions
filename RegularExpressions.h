@@ -113,6 +113,10 @@ public:
 	// 100	($name1:())
 	// 101	{name1}
 
+	// 110	{:String}
+	// 111	{:Digit}
+	// 112	{:Name}
+
 	~BaseFinder();
 
 	static BaseFinder* ConvertRowRE(const RowRE*);
